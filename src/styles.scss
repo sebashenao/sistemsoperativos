@@ -1,0 +1,27 @@
+
+
+table th {
+	border-top: none !important;
+	border-bottom: 1px solid black !important; 
+}
+
+input {
+	-webkit-appearance: none;
+}
+
+p {
+	margin-bottom: 0 !important;
+}
+
+.btn-operator {
+	margin-left: 2%;
+}
+
+.activo {
+	cursor: pointer;
+}
+
+.activo:hover {
+	background-color: black;
+	color: white;
+}

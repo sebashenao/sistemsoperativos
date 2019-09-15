@@ -1,0 +1,61 @@
+<!-- <router-outlet></router-outlet> -->
+<br>
+<br>
+<h4 class="text-center">Procesos Sistemas Operativos</h4>
+<br>
+<div class="row">
+  <div class="col"></div>
+  <div class="col-4">
+    <div class="row">
+      <div class="col-8">
+        <input class="form-control inputDuracion" type="text" [(ngModel)]="this.duracion" placeholder="Digite Duracion Proceso">
+      </div>
+      <div class="col-4">
+        <button class="btn btn-success" (click)="pushProceso(this.duracion, false)"><i class="fas fa-plus"></i> Añadir</button>
+      </div>
+    </div>
+    <br>
+    <button class="btn btn-info" (click)="FCSF()">FCSF</button>
+    <button class="btn btn-info btn-operator" (click)="SJF()">SJF</button>
+    <button class="btn btn-info btn-operator" (click)="Prioridad()">Prioridad</button>
+    <button class="btn btn-info btn-operator" (click)="RoundRobin()">Round Robin</button>
+    <button class="btn btn-danger btn-operator" (click)="clear()"><i class="fas fa-trash"></i></button>
+    <br>
+    <br>
+    <table class="table tablaProcesos">
+      <thead>
+        <th>Proceso</th>
+        <th>Duracion(seg)</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of this.procesoService.getProceso().getListOriginal()" (click)="DarPrioridad(data.duracion)">
+          <td>Proceso #{{ data.id }}</td>
+          <td>{{ data.duracion }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col"></div>
+  <div class="col-6">
+    <h5 class="text-center">Tabla Resultados</h5>
+    <br>
+    <br>
+    <table class="table">
+      <thead>
+        <th>Proceso</th>
+        <th>Tiempo Espera</th>
+        <th>Tiempo Retorno</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of this.listProceso">
+          <td>Proceso #{{ data.id }} - Duracion: {{ data.duracion }}s</td>
+          <td>{{ data.tiempoEspera }}</td>
+          <td>{{ data.tiempoRetorno }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>Promedio Espera:</strong> {{ this.procesoService.getProceso().getPromedioEspera() }}</p>
+    <p><strong>Promedio Retorno:</strong> {{ this.procesoService.getProceso().getPromedioRetorno() }}</p>
+  </div>
+  <div class="col"></div>
+</div>
