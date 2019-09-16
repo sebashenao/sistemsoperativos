@@ -13,6 +13,14 @@
       <div class="col-4">
         <button class="btn btn-success" (click)="pushProceso(this.duracion, false)"><i class="fas fa-plus"></i> Añadir</button>
       </div>
+      <div class="col-12 relleno"></div>
+      <div class="col-8 roundRobin">
+        <input class="form-control" type="text" [(ngModel)]="this.tiempoq" placeholder="Digite Duracion Quantom">
+      </div>
+      <div class="col-4 roundRobin">
+        <button class="btn btn-warning" (click)="RoundRobinProceso(this.tiempoq, true)">Quantom</button>
+      </div>
+      
     </div>
     <br>
     <button class="btn btn-info" (click)="FCSF()">FCSF</button>
