@@ -24,14 +24,18 @@ export class AppComponent {
   promedioRetorno: number = 0
   prioridadActiva : boolean = false
   tamLista: number = 0
+  terminados: number = 0
   contadorPrioridad: number = 0
   listProcesoPrioridad: any = []
   tiempoProceso : number = 0
   frenarProceso: boolean = false
+  mostrarTabla: boolean = true
+  contadorRound: number = 0
+  listTemp: any = []
 
   ngOnInit() {
     $('.inputDuracion').keypress(function(tecla) {
-      if (tecla.charCode < 48 || tecla.charCode > 57) return false
+      if (tecla.charCode< 48 || tecla.charCode > 57) return false
     });
     $('.roundRobin').hide()
   }
@@ -156,17 +160,27 @@ export class AppComponent {
   RoundRobin() {
     this.inhabilitarBotones()
     $('.roundRobin').show('slow')
+    this.tamLista = this.procesoService.getProceso().getListOriginal().length
   }
 
   RoundRobinProceso(q: any, limpiar: boolean) {
 
+    q = parseInt(q)
+
     if(limpiar) {
+      this.mostrarTabla = false
       this.listProceso = []
+      this.contadorRound = 0
+      for(var i of this.procesoService.getProceso().getListOriginal()) {
+          this.listProceso.push(i)
+      }
       this.procesoService.getProceso().setPromedioEspera(0)
       this.procesoService.getProceso().setPromedioRetorno(0)
+      this.terminados = 0
     }
 
     let entrar = true
+    let listTemp = []
 
     // if(q != undefined && q != null && q != '') {
     //   if (this.procesoService.getProceso().getListOriginal().length > 0) {
@@ -179,31 +193,42 @@ export class AppComponent {
     // }
 
     if(entrar) {
-      if (this.procesoService.getProceso().getListOriginal().length > 0) {
-        for (var i of this.procesoService.getProceso().getListOriginal()) {
+      if (this.listProceso.length > 0) {
+        for (var i of this.listProceso) {
 
-          if(i.tiempoEspera != 0) {
-            i.tiempoEsperaTemp = i.tiempoEspera - q
+          i.tiempoEsperaTemp = parseInt(i.duracion) - q
+          this.contadorRound = this.contadorRound + q
+
+          if(!i.listo) {
+            if(i.tiempoEspera > 0) {
+              i.tiempoEspera = this.contadorRound
+            }
+
+            i.tiempoRetorno = this.contadorRound
           }
-          else {
-            i.tiempoEsperaTemp = 0
+          listTemp.push(i)
+
+          if(i.tiempoEsperaTemp <= 0) {
+            this.terminados++
             i.listo = true
           }
-
-          
-
-          console.log(i.tiempoEsperaTemp);
-          
-          this.procesoService.getProceso().setPromedioEspera(this.procesoService.getProceso().getPromedioEspera() + i.tiempoEspera)
-          this.procesoService.getProceso().setPromedioRetorno(this.procesoService.getProceso().getPromedioRetorno() + i.tiempoRetorno)
-          this.listProceso.push(i)
         }
-        this.procesoService.getProceso().setPromedioEspera(this.procesoService.getProceso().getPromedioEspera() / this.procesoService.getProceso().getListOriginal().length)
-        this.procesoService.getProceso().setPromedioRetorno(this.procesoService.getProceso().getPromedioRetorno() / this.procesoService.getProceso().getListOriginal().length)
+        this.listProceso = listTemp
+        // for(var j of listTemp) {
+        //   this.listProceso.push(j)
+        // }
+        console.log(this.listProceso);
+        this.mostrarTabla = true
+        
+        // if(listTemp.length > 0) {
+        // }
       }
-    } 
+    }
 
-    // this.RoundRobinProceso(q, false)
+    if(this.tamLista > this.terminados) {
+      this.RoundRobinProceso(q, false)
+    }
+
   }
 
   clear() {
@@ -218,6 +243,7 @@ export class AppComponent {
     this.procesoService.getProceso().setPromedioRetorno(0)
     this.prioridadActiva = false
     this.contadorPrioridad = 0
+    this.contadorRound = 0
     setTimeout(() => {
       $('.tablaProcesos').find('tr').removeClass('activo');
       $('.btn-info, .inputDuracion, .btn-success').removeAttr('disabled');

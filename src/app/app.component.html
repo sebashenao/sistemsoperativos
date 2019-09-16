@@ -48,7 +48,7 @@
     <h5 class="text-center">Tabla Resultados</h5>
     <br>
     <br>
-    <table class="table">
+    <table *ngIf="this.mostrarTabla" class="table">
       <thead>
         <th>Proceso</th>
         <th>Tiempo Espera</th>
